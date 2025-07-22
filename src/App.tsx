@@ -1,14 +1,38 @@
-// src/App.tsx
+/**
+ * @file App.tsx
+ * @description Aplikasi frontend pemesanan rental mobil menggunakan React dan TypeScript. 
+ * Menyediakan form pemesanan mobil, perhitungan biaya, diskon, dan integrasi API untuk membuat booking.
+ */
+
+
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { Car, Calculator, Clock, Percent, CreditCard } from 'lucide-react';
 
-/* ---------- TYPES ---------- */
+/* ---------- TIPE DATA ---------- */
+
+/**
+ * Tipe data untuk objek mobil.
+ * @typedef {Object} Car
+ * @property {number} id - ID unik dari mobil
+ * @property {string} name - Nama mobil
+ * @property {number} price_per_day - Harga sewa per hari dalam rupiah
+ */
+
 interface Car {
   id: number;
   name: string;
   price_per_day: number;
 }
+
+
+/**
+ * Tipe data untuk form pemesanan mobil.
+ * @typedef {Object} BookingForm
+ * @property {number | null} selectedCar - ID mobil yang dipilih
+ * @property {number} rentalDays - Lama sewa dalam hari
+ * @property {number} extraHours - Jam tambahan di luar hari sewa
+ */
 
 interface BookingForm {
   selectedCar: number | null;
@@ -17,6 +41,13 @@ interface BookingForm {
 }
 
 /* ---------- HELPERS ---------- */
+
+/**
+ * Mengubah angka ke format mata uang Rupiah (IDR).
+ * @function
+ * @param {number} amount - Jumlah uang dalam angka
+ * @returns {string} - Format rupiah dari angka tersebut
+ */
 const formatCurrency = (amount: number): string =>
   new Intl.NumberFormat('id-ID', {
     style: 'currency',
@@ -24,11 +55,33 @@ const formatCurrency = (amount: number): string =>
     minimumFractionDigits: 0,
   }).format(amount);
 
+/**
+ * Menghitung persentase diskon berdasarkan lama sewa.
+ *
+ * Diskon:
+ * - ≥10 hari: 25%
+ * - 7-9 hari: 20%
+ * - 4-6 hari: 10%
+ * - <4 hari: 0%
+ *
+ * @function
+ * @param {number} days - Jumlah hari sewa
+ * @returns {number} - Persentase diskon
+ */
+
 const calculateDiscountPct = (days: number): number =>
   days >= 10 ? 25 : days >= 7 ? 20 : days >= 4 ? 10 : 0;
 
 /* ---------- MAIN COMPONENT ---------- */
+/**
+ * Komponen utama aplikasi.
+ * Mengelola form pemesanan mobil, menampilkan rincian biaya, serta menangani pengiriman data ke server.
+ *
+ * @component
+ * @returns {JSX.Element} - Antarmuka pengguna aplikasi rental mobil
+ */
 function App() {
+  
   const [cars, setCars] = useState<Car[]>([]);
   const [booking, setBooking] = useState<BookingForm>({
     selectedCar: null,
@@ -36,7 +89,10 @@ function App() {
     extraHours: 0,
   });
 
-  // Fetch data mobil
+    /**
+   * Mengambil daftar mobil dari server saat komponen dimuat.
+   * Menggunakan endpoint `GET /cars`.
+   */
   useEffect(() => {
     axios
       .get('http://localhost:3001/cars')
@@ -56,20 +112,36 @@ function App() {
   const total = subtotal - discount + extraHoursCost;
 
   /* ---------- HANDLERS ---------- */
+    /**
+   * Mengubah nilai input form pemesanan.
+   *
+   * @function
+   * @param {keyof BookingForm} field - Nama field pada BookingForm
+   * @param {string | number} value - Nilai baru untuk field tersebut
+   */
   const handleInputChange = (field: keyof BookingForm, value: string | number) =>
     setBooking((prev) => ({ ...prev, [field]: value }));
 
+    /**
+   * Mengirim data pemesanan ke server.
+   * Endpoint: `POST /booking`
+   * Jika berhasil, akan menampilkan pesan sukses dan mereset form.
+   * Jika gagal, akan menampilkan alert error.
+   */
   const handleBooking = async () => {
     if (!selectedCarData) return;
-    await axios
-      .post('http://localhost:3001/booking', {
+    try {
+      const res = await axios.post('http://localhost:3001/booking', {
         carId: selectedCarData.id,
         rentalDays: booking.rentalDays,
         extraHours: booking.extraHours,
         totalPrice: total,
-      })
-      .then((res) => alert(`Booking berhasil!`))
-      .catch((err) => alert(err.response?.data?.error || 'Gagal membooking'));
+      });
+      setBooking({ selectedCar: null, rentalDays: 1, extraHours: 0 });
+      alert(res.data.message);
+    } catch (err) {
+      alert(err.response?.data?.error || 'Gagal membooking');
+    }
   };
 
   /* ---------- RENDER ---------- */
