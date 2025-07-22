@@ -1,12 +1,66 @@
-# React + Vite
+# Rental Mobil
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplikasi rental mobil berbasis **React**, **Express**, dan **MySQL**.
 
-Currently, two official plugins are available:
+## 🔍 Deskripsi
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Aplikasi ini memungkinkan pengguna untuk melihat daftar mobil yang tersedia, melakukan pemesanan mobil, dan melihat rincian harga. Admin dapat mengelola data mobil dan data pemesanan melalui API backend.
 
-## Expanding the ESLint configuration
+## 🧩 Fitur Utama
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Frontend menggunakan React + Tailwind CSS
+- Backend menggunakan Express.js
+- Manajemen data mobil dan pemesanan
+- Perhitungan otomatis harga sewa berdasarkan hari dan jam tambahan
+- API berbasis REST untuk komunikasi frontend-backend
+
+## 🗂 Struktur Direktori
+
+```
+├── client/              # React frontend
+│   ├── public/
+│   └── src/
+│       ├── components/  # Komponen UI
+│       ├── pages/       # Halaman aplikasi
+│       └── App.tsx      # Root komponen
+├── server/              # Express backend
+│   ├── routes/          # Routing API
+│   ├── controllers/     # Logic bisnis
+│   └── db.js            # Koneksi database
+├── .env                 # Konfigurasi environment
+└── package.json
+```
+
+## 🚀 Instalasi
+
+```bash
+# Clone repository
+git clone https://github.com/rakhathegreat/rental-mobil.git
+cd rental-mobil
+
+# Setup server (backend)
+cd server
+npm install
+cp .env.example .env  # sesuaikan konfigurasi DB
+node index.js          # atau gunakan nodemon
+
+# Setup client (frontend)
+cd ../client
+npm install
+npm run dev            # jalankan React
+```
+
+Akses aplikasi di `http://localhost:5173` untuk frontend dan `http://localhost:3000` untuk backend.
+
+## 🧪 Testing
+
+Belum tersedia unit test — akan ditambahkan pada rilis berikutnya.
+
+## 📝 Kontribusi
+
+Pull request dan masukan sangat diterima!
+
+## 📄 Lisensi
+
+[https://github.com/rakhathegreat/rental-mobilDistribusi](https://github.com/rakhathegreat/rental-mobilDistribusi) di bawah **MIT License**. Lihat file `LICENSE` untuk detail.
+
